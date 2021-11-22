@@ -8,4 +8,4 @@
  */
 
 rootProject.name = 'memallook'
-include('app')
+include('memallook')
