@@ -6,6 +6,7 @@ import com.hiring.memallook.data.MemoryBlock;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Scanner;
 
 /**
  * A class to handle all writes and reads to and from files.
@@ -29,6 +30,8 @@ public class FileHandler {
             fw.write("\n");
             fw.write(String.valueOf(mem.pageSize));
             fw.write("\n");
+            fw.write(mem.getMostRecentTag());
+            fw.write("\n");
 
             for (MemoryBlock block : mem.memoryBlockList) {
                 String blockData = String.join(",",
@@ -39,6 +42,26 @@ public class FileHandler {
         } catch (IOException e) {
             throw new IOException(IO_ERROR_MESSAGE, e);
         }
+    }
+
+    public Memory readMemoryFromFile() throws IOException {
+        Scanner in = new Scanner(new File(FILE_LOCATION));
+
+        int numPages = Integer.parseInt(in.nextLine());
+        int pageSize = Integer.parseInt(in.nextLine());
+        String nextTag = in.nextLine();
+
+        Memory mem = new Memory(numPages, pageSize);
+        mem.setMostRecentTag(nextTag);
+        while (in.hasNext()) {
+            Scanner memBlockScanner = new Scanner(in.nextLine());
+            memBlockScanner.useDelimiter(",");
+            String tag = memBlockScanner.next();
+            int start = Integer.parseInt(memBlockScanner.next());
+            int end = Integer.parseInt(memBlockScanner.next());
+            mem.memoryBlockList.add(new MemoryBlock(tag, start, end));
+        }
+        return mem;
     }
 
     public boolean removeMemoryFile() {

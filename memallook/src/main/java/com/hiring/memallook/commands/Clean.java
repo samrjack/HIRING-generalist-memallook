@@ -1,5 +1,6 @@
 package com.hiring.memallook.commands;
 
+import com.hiring.memallook.io.FileHandler;
 import picocli.CommandLine;
 
 @CommandLine.Command(name = "clean",
@@ -7,6 +8,7 @@ import picocli.CommandLine;
 public class Clean implements Runnable {
     @Override
     public void run() {
-        System.out.println("Running clean");
+        new FileHandler().removeMemoryFile();
+        System.out.println("Ok, memory cleared. Use 'memallook P S' again to make a new simulation.");
     }
 }
