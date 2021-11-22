@@ -30,7 +30,7 @@ public class Memory {
         // check between the beginning of the memory space and the first allocated chunk first, then check
         // between the rest of the chunks
         if (this.memoryBlockList.size() == 0 || this.memoryBlockList.get(0).start >= numberOfPages) {
-            memoryBlockList.add(0, new MemoryBlock(calculateNextTag(), 0, numberOfPages));
+            memoryBlockList.add(0, new MemoryBlock(createNextTag(), 0, numberOfPages));
             return Optional.of(mostRecentTag);
         }
 
@@ -39,7 +39,7 @@ public class Memory {
             MemoryBlock prevBlock = memoryBlockList.get(i - 1);
             if (curBlock.start - prevBlock.end >= numberOfPages) {
                 memoryBlockList.add(i - 1,
-                        new MemoryBlock(calculateNextTag(),
+                        new MemoryBlock(createNextTag(),
                                 prevBlock.end,
                                 prevBlock.end + numberOfPages));
                 return Optional.of(mostRecentTag);
@@ -50,7 +50,7 @@ public class Memory {
         MemoryBlock lastBlock = memoryBlockList.get(memoryBlockList.size() - 1);
         if (numPages - lastBlock.end > numberOfPages) {
             memoryBlockList.add( memoryBlockList.size(),
-                    new MemoryBlock(calculateNextTag(),
+                    new MemoryBlock(createNextTag(),
                             lastBlock.end,
                             lastBlock.end + numberOfPages));
             return Optional.of(mostRecentTag);
@@ -69,17 +69,47 @@ public class Memory {
         return false;
     }
 
+    /**
+     * Defragments the memory blocks to remove the empty space from between the allocated blocks.
+     */
+    public void defragment() {
+        if(memoryBlockList.size() > 0) {
+            MemoryBlock curBlk = memoryBlockList.get(0);
+            curBlk.end -= curBlk.start;
+            curBlk.start = 0;
+        }
+        for (int i = 1; i < memoryBlockList.size(); i++) {
+            MemoryBlock curBlk = memoryBlockList.get(i);
+            MemoryBlock prevBlk = memoryBlockList.get(i - 1);
+
+            curBlk.end -= curBlk.start - prevBlk.end;
+            curBlk.start = prevBlk.end;
+        }
+    }
+
+    /**
+     * Gets the most recently used tag in order to allow saving or referencing later.
+     * @return the last tag used for an allocation.
+     */
     public String getMostRecentTag() {
         return mostRecentTag;
     }
+
+    /**
+     * Sets the most recent to so that it can start in the middle of the tag options.
+     * @param nextTag The tag to start calculating from.
+     */
     public void setMostRecentTag(String nextTag) {
         this.mostRecentTag = nextTag;
     }
 
-    private String calculateNextTag() {
+    /**
+     * Calculates the next memory tag based on the current memory tag.
+     * @return Next memory tag to be used.
+     */
+    private String createNextTag() {
         String newTag = Integer.toString(Integer.parseInt(mostRecentTag) + 1);
         mostRecentTag = newTag;
         return mostRecentTag;
     }
-
 }

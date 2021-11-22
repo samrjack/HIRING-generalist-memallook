@@ -12,7 +12,8 @@ import java.io.IOException;
                 Allocate.class,
                 Clean.class,
                 Deallocate.class,
-                Display.class
+                Display.class,
+                Defragment.class
         },
         description = "Create a new memory simulation.")
 public class Initialization implements Runnable{
