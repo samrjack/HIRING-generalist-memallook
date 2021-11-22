@@ -21,8 +21,9 @@ public class Memory {
      * @return empty if the block can't be allocated and the tag otherwise.
      */
     public Optional<String> allocate(int size) {
+
         // Number of pages needed to store at least SIZE bytes.
-        int numberOfPages = (size + pageSize - 1) / numPages;
+        int numberOfPages = (size + pageSize - 1) / pageSize;
 
         if (numberOfPages > numPages)
             return Optional.empty();
