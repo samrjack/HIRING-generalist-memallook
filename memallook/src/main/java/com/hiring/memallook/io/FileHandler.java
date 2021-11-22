@@ -16,9 +16,12 @@ public class FileHandler {
             new String[]{System.getProperty("user.home"), ".config", "memallook", "memory"});
     private static final String IO_ERROR_MESSAGE = "Trouble writing to the file " + FILE_LOCATION +
                     ". Please check permissions then try again.";
-    public FileHandler() {
-    }
 
+    /**
+     * Writes the memory model to disk.
+     * @param mem the memory model to be written.
+     * @throws IOException File cannot be written to.
+     */
     public void writeMemoryToFile(Memory mem) throws IOException {
         removeMemoryFile();
         File outputFile = new File(FILE_LOCATION);
@@ -44,6 +47,11 @@ public class FileHandler {
         }
     }
 
+    /**
+     * Reads in the memory model from file.
+     * @return The current memory model that's on file
+     * @throws IOException No file found or cannot be read
+     */
     public Memory readMemoryFromFile() throws IOException {
         Scanner in = new Scanner(new File(FILE_LOCATION));
 
@@ -64,6 +72,10 @@ public class FileHandler {
         return mem;
     }
 
+    /**
+     * Removes the model from memory. The model can no longer be accessed after this is completed.
+     * @return true if deleted successfully, false otherwise.
+     */
     public boolean removeMemoryFile() {
         return new File(FILE_LOCATION).delete();
     }

@@ -59,6 +59,11 @@ public class Memory {
         }
     }
 
+    /**
+     * Removes the block belonging to the given tag from the memory model.
+     * @param tag tag to remove
+     * @return true if successfully removed, false if not.
+     */
     public boolean deallocate(String tag) {
         for (int i = 0; i < memoryBlockList.size(); i++) {
             if (memoryBlockList.get(i).tag.equals(tag)) {
